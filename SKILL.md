@@ -1,63 +1,74 @@
 ---
 name: wechat-miniprogram-dev
-description: CloudBase-focused WeChat Mini Program development skill. Use when tasks explicitly involve CloudBase or wx.cloud in mini programs: cloud functions, cloud database/storage, cloudbaserc.json, CloudBase CLI, or CI/CD deployment for CloudBase resources. Prefer generic miniprogram-development for non-CloudBase mini program work.
+description: 面向 CloudBase（云开发）的微信小程序开发技能。仅在任务明确涉及 wx.cloud、云函数、云数据库/云存储、cloudbaserc.json、CloudBase CLI 或 CloudBase 相关 CI/CD 时使用。非 CloudBase 的通用小程序开发优先使用 miniprogram-development。
 ---
 
-# WeChat Mini Program Development with CloudBase
+# 微信小程序 CloudBase 开发技能
 
-Use this skill when the user is working on a WeChat Mini Program that explicitly uses CloudBase (云开发), such as `wx.cloud`, cloud functions, CloudBase database/storage, or CloudBase deployment pipelines.
+当用户的小程序项目明确使用云开发（如 `wx.cloud`、`cloudfunctions/`、`cloudbaserc.json`）时使用本技能。
 
-## When to use
+## 适用范围
 
-Use this skill for:
+- 小程序端 `wx.cloud` 初始化与调用
+- 云函数、云数据库、云存储相关开发
+- CloudBase CLI 部署与环境注入
+- 基于 CloudBase 的管理后台集成
 
-- `wx.cloud` initialization, cloud functions, cloud database, cloud storage
-- `cloudfunctions/`, `cloudbaserc.json`, CloudBase CLI workflows
-- CloudBase-related CI/CD and environment injection
-- CloudBase-backed admin dashboard integration
+## 不适用范围
 
-Do not use this skill for:
+- 不依赖 CloudBase 的纯页面/UI/路由开发
+- 通用预览调试问题（优先 `miniprogram-development`）
+- 与小程序 CloudBase 无关的纯后端任务
 
-- Pure mini program UI/page logic without CloudBase dependency
-- Generic mini program preview/debug questions better covered by `miniprogram-development`
-- Pure backend tasks not tied to mini program CloudBase usage
+## Project Structure（推荐）
 
-## Decision flow (required)
+```text
+project/
+├── miniprogram/                 # 小程序代码
+│   ├── pages/
+│   ├── app.js
+│   ├── app.json
+│   └── app.wxss
+├── cloudfunctions/              # 云函数
+├── cloudbaserc.json             # 云函数/环境配置
+├── project.config.json          # 小程序工程配置
+└── .github/workflows/           # CI/CD（可选）
+```
 
-1. Confirm CloudBase usage from user intent or repo evidence (`wx.cloud`, `cloudfunctions`, `cloudbaserc.json`).
-2. If CloudBase is not present, switch to generic mini program workflow.
-3. Pick one scenario and load only the needed reference:
-   - Core integration: `references/cloudbase-core.md`
-   - CI/CD and deployment: `references/cloudbase-cicd.md`
-   - Known issues and fixes: `references/common-issues.md`
-4. Apply only scenario-relevant guidance; avoid mixing all patterns by default.
+## 决策流程（必须遵循）
 
-## Guardrails
+1. 先确认是否使用 CloudBase（看用户描述或仓库证据：`wx.cloud`、`cloudfunctions`、`cloudbaserc.json`）。
+2. 若未使用 CloudBase，切换到通用小程序流程，不套用本技能规则。
+3. 按场景按需加载一个参考文档：
+   - 核心集成：`references/cloudbase-core.md`
+   - CI/CD 与部署：`references/cloudbase-cicd.md`
+   - 常见故障：`references/common-issues.md`
+4. 只应用当前场景所需规则，避免一次性混用全部模式。
 
-- Security first: `"auth": false` is only for intentionally public, low-risk endpoints.
-- For any public cloud function, require input validation, rate limiting, and least-privilege data access.
-- Do not hardcode environment IDs, app IDs, or credentials in source.
-- Treat runtime versions and dependency versions as project-specific; verify against the current repository/toolchain before changing.
+## 安全与约束
 
-## Project checks
+- `"auth": false` 仅用于明确需要公开访问、且低风险的接口。
+- 公开云函数必须做参数校验、限流与最小权限控制。
+- 不在代码中硬编码 `envId`、`appid`、密钥。
+- runtime 与依赖版本按当前仓库实际约束校验，不盲目套示例版本。
 
-Before implementation or release advice, validate:
+## 执行前检查
 
-- `project.config.json` exists and points to the expected mini program root
-- CloudBase environment selection strategy is clear (placeholder or env vars)
-- Referenced local assets and page config files exist
-- For release-related tasks, required appid/secrets are available via secure config
+- `project.config.json` 与小程序根目录配置一致。
+- 环境 ID 注入策略明确（占位符替换或环境变量）。
+- 页面配置文件与本地资源路径完整可用。
+- 发布任务所需 `appid` / secrets 已通过安全配置提供。
 
-## References
+## 参考文档
 
-- [CloudBase Core Integration](references/cloudbase-core.md)
-- [CloudBase CI/CD and Deployment](references/cloudbase-cicd.md)
-- [Common Issues and Fixes](references/common-issues.md)
+- [CloudBase 核心集成](references/cloudbase-core.md)
+- [CloudBase CI/CD 与部署](references/cloudbase-cicd.md)
+- [常见问题与修复](references/common-issues.md)
 
-## Related skills
+## 相关技能
 
-- `miniprogram-development`: generic mini program development/debug/preview flow
-- `cloud-functions`: detailed cloud function development/runtime concerns
-- `auth-wechat-miniprogram`: mini program authentication patterns
-- `cloudbase-document-database-in-wechat-miniprogram`: DB SDK query/update patterns
-- `ai-model-wechat`: AI model integration in mini programs
+- `miniprogram-development`：通用小程序开发/调试/预览
+- `cloud-functions`：云函数运行时与实现细节
+- `auth-wechat-miniprogram`：小程序认证流程
+- `cloudbase-document-database-in-wechat-miniprogram`：数据库 SDK 用法
+- `ai-model-wechat`：小程序 AI 能力集成

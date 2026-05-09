@@ -1,17 +1,17 @@
-# Common Issues and Fixes
+# 常见问题与修复
 
-## TOC
+## 目录
 
-1. Share-scene auth failure
-2. TabBar navigation errors
-3. Oversized URL params
-4. Expired image URLs
+1. 分享场景认证失败
+2. TabBar 跳转报错
+3. URL 参数过长
+4. 图片链接过期
 
-## 1. Share-scene auth failure (-501023)
+## 1. 分享场景认证失败（-501023）
 
-Problem: share entry opens page before user context is ready, protected function call fails.
+问题：分享打开页面时用户态未就绪，调用受保护云函数失败。
 
-Fix pattern:
+修复：
 
 ```javascript
 // app.js
@@ -24,36 +24,36 @@ async onLoad() {
 }
 ```
 
-For intentionally public read-only endpoints, use controlled `auth: false` plus validation.
+若必须公开读接口，可在严格风控下设置 `auth: false`。
 
-## 2. TabBar navigation errors
+## 2. TabBar 跳转报错
 
-Problem: `redirectTo` or `navigateTo` used for TabBar page.
+问题：对 TabBar 页面使用了 `redirectTo`/`navigateTo`。
 
-Fix:
+修复：
 
 ```javascript
 wx.switchTab({ url: '/pages/index/index' })
 ```
 
-## 3. Oversized URL params
+## 3. URL 参数过长
 
-Problem: payload too large for route query.
+问题：页面 query 承载数据过大。
 
-Fix:
+修复：
 
 ```javascript
 wx.setStorageSync('transfer_data', data)
 wx.switchTab({ url: '/pages/target/target' })
 ```
 
-Read and clear on target page to avoid stale data.
+目标页读取后及时清理，避免脏数据残留。
 
-## 4. Expired image URLs
+## 4. 图片链接过期
 
-Problem: temporary file URL expires and shared pages fail to load image.
+问题：临时链接失效导致分享页图片无法展示。
 
-Fix:
+修复：
 
-1. Persist `fileID` in DB.
-2. Resolve a fresh temporary URL with `getTempFileURL` at render time.
+1. 数据库存 `fileID`。
+2. 展示时通过 `getTempFileURL` 获取最新临时链接。

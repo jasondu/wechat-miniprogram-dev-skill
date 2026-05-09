@@ -1,59 +1,59 @@
-# CloudBase CI/CD and Deployment
+# CloudBase CI/CD 与部署
 
-## TOC
+## 目录
 
-1. Secrets contract
-2. Pipeline structure
-3. Deployment commands
-4. Version and branch notes
+1. Secrets 约定
+2. 流水线结构
+3. 常用部署命令
+4. 分支与版本注意事项
 
-## 1. Secrets contract
+## 1. Secrets 约定
 
-Recommended CI secrets:
+建议在 CI 中提供：
 
 - `TCB_ENV_ID`
 - `TCB_SECRET_ID`
 - `TCB_SECRET_KEY`
 - `WX_MINIPROGRAM_APPID`
 
-Never commit these values into repository files.
+禁止把这些值写入仓库源码。
 
-## 2. Pipeline structure
+## 2. 流水线结构
 
-Typical jobs:
+典型步骤：
 
-1. Build/verify mini program assets.
-2. Deploy cloud functions.
-3. Upload mini program package.
-4. Deploy admin static site (if present).
+1. 构建/校验小程序资源。
+2. 部署云函数。
+3. 上传小程序包。
+4. 部署管理后台静态站点（如存在）。
 
-Sample placeholder replacement:
+占位符替换示例：
 
 ```bash
 sed -i "s/__TCB_ENV_ID__/${TCB_ENV_ID}/g" miniprogram/app.js
 ```
 
-Use branch triggers that match the current repository convention (`main` or `master`).
+触发分支需与仓库实际一致（`main` 或 `master`）。
 
-## 3. Deployment commands
+## 3. 常用部署命令
 
 ```bash
-# Login
+# 登录
  tcb login --apiKeyId <secretId> --apiKey <secretKey>
 
-# Deploy one/all functions
+# 部署单个/全部云函数
  tcb fn deploy <functionName> -e <envId> --force
  tcb fn deploy all -e <envId> --force
 
-# Upload mini program
+# 上传小程序
  tcb miniprogram upload --filePath miniprogram -e <envId> --appId <appId>
 
-# Deploy static hosting
+# 部署静态托管
  tcb hosting deploy <localPath> -e <envId>
 ```
 
-## 4. Version and branch notes
+## 4. 分支与版本注意事项
 
-- Validate CloudBase CLI compatibility in CI before rollout.
-- Pin major versions of CI actions where possible.
-- Confirm default branch name before copying workflow examples.
+- 在 CI 中先校验 CloudBase CLI 版本兼容性。
+- GitHub Actions 建议固定 major 版本。
+- 复制 workflow 前先确认默认分支名。

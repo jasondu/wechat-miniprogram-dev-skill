@@ -1,16 +1,14 @@
-# CloudBase Core Integration
+# CloudBase 核心集成
 
-## TOC
+## 目录
 
-1. Initialization
-2. Cloud function baseline
-3. Database and storage baseline
-4. Admin dashboard baseline
-5. Release-time checks
+1. 小程序端初始化
+2. 云函数基线
+3. 数据库与云存储基线
+4. 管理后台基线
+5. 发布前核查
 
-## 1. Initialization
-
-Initialize CloudBase in mini program `app.js`:
+## 1. 小程序端初始化
 
 ```javascript
 App({
@@ -35,12 +33,12 @@ App({
 })
 ```
 
-Notes:
+说明：
 
-- Keep `__TCB_ENV_ID__` as a deployment-time placeholder.
-- Do not call protected functions before `authPromise` resolves.
+- `__TCB_ENV_ID__` 建议在部署阶段替换。
+- 依赖用户态的调用应在 `authPromise` 完成后再执行。
 
-## 2. Cloud function baseline
+## 2. 云函数基线
 
 ```javascript
 const cloud = require('wx-server-sdk')
@@ -55,21 +53,17 @@ exports.main = async () => {
 }
 ```
 
-Function config guidance:
+规则：
 
-- Runtime and dependency versions must match current project constraints.
-- If setting `auth: false`, add explicit request validation and abuse controls.
+- runtime / 依赖版本必须以仓库当前约束为准。
+- 若使用 `auth: false`，必须额外做校验与防滥用控制。
 
-## 3. Database and storage baseline
-
-Mini program DB:
+## 3. 数据库与云存储基线
 
 ```javascript
 const db = wx.cloud.database()
 await db.collection('tasks').add({ data: { title: 'demo' } })
 ```
-
-Storage upload:
 
 ```javascript
 const res = await wx.cloud.uploadFile({
@@ -78,11 +72,9 @@ const res = await wx.cloud.uploadFile({
 })
 ```
 
-Use `fileID` as source of truth. Temporary URLs can expire; refresh with `getTempFileURL` when rendering.
+建议：数据库存 `fileID`，展示时动态调用 `getTempFileURL` 刷新临时链接。
 
-## 4. Admin dashboard baseline
-
-With `@cloudbase/js-sdk`, authenticate before DB access:
+## 4. 管理后台基线
 
 ```javascript
 import cloudbase from '@cloudbase/js-sdk'
@@ -94,9 +86,11 @@ const db = app.database()
 await auth.signInAnonymously()
 ```
 
-## 5. Release-time checks
+先登录，再访问数据库。
 
-- `project.config.json` and `miniprogramRoot` are aligned.
-- Environment IDs and app IDs come from env/secrets, not constants.
-- Function permissions are least privilege.
-- Public endpoints are audited for abuse and data leakage.
+## 5. 发布前核查
+
+- `project.config.json` 与 `miniprogramRoot` 一致。
+- 环境 ID / appid 通过变量或 secrets 注入。
+- 云函数权限最小化。
+- 公共接口已做防刷与数据泄露检查。
