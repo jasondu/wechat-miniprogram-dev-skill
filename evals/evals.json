@@ -1,0 +1,30 @@
+{
+  "skill_name": "wechat-miniprogram-dev",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我在分享页面调用云函数报错 -501023 权限不足，怎么解决？用户是从分享链接打开的页面，没有登录过小程序。",
+      "expected_output": "应该提供分享场景认证解决方案：app.js 创建 authPromise，页面等待认证完成，配合云函数配置 auth: false"
+    },
+    {
+      "id": 2,
+      "prompt": "小程序云存储的图片链接过期了怎么办？用户分享的图片 2 小时后就打不开",
+      "expected_output": "应该解释 tempFileURL 过期问题，提供 fileID + getTempFileURL 刷新方案"
+    },
+    {
+      "id": 3,
+      "prompt": "跳转到首页报错 redirectTo:fail can not redirect to a tabbar page",
+      "expected_output": "应该指出 tabbar 页面需要用 switchTab 而不是 redirectTo"
+    },
+    {
+      "id": 4,
+      "prompt": "帮我搭建一个微信小程序的 GitHub Actions CI/CD，需要部署小程序代码、云函数和管理后台",
+      "expected_output": "应该提供完整的 CI/CD workflow 示例，包括必要的 secrets 配置"
+    },
+    {
+      "id": 5,
+      "prompt": "管理后台访问数据库报错 unauthenticated，怎么解决？",
+      "expected_output": "应该指出需要先匿名登录才能访问数据库，提供 App.vue 初始化示例"
+    }
+  ]
+}
